@@ -1,8 +1,8 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Play, Sparkles } from "lucide-react";
+import { ArrowRight, Play, Sparkles, TrendingUp, Users, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import dashboardVideo from "@/assets/dashboard-walkthrough.mp4";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const Navbar = () => (
   <motion.nav
@@ -35,6 +35,29 @@ const Navbar = () => (
 
 export default Navbar;
 
+/* Animated counter hook */
+const useCounter = (end: number, duration: number = 2, delay: number = 0) => {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      let start = 0;
+      const step = end / (duration * 60);
+      const interval = setInterval(() => {
+        start += step;
+        if (start >= end) {
+          setCount(end);
+          clearInterval(interval);
+        } else {
+          setCount(Math.floor(start));
+        }
+      }, 1000 / 60);
+      return () => clearInterval(interval);
+    }, delay * 1000);
+    return () => clearTimeout(timeout);
+  }, [end, duration, delay]);
+  return count;
+};
+
 /* Floating particles */
 const FloatingParticle = ({ delay, x, y, size }: { delay: number; x: string; y: string; size: number }) => (
   <motion.div
@@ -49,6 +72,67 @@ const FloatingParticle = ({ delay, x, y, size }: { delay: number; x: string; y: 
     transition={{ duration: 5 + delay, repeat: Infinity, ease: "easeInOut", delay }}
   />
 );
+
+/* 3D floating mini-card */
+const FloatingCard = ({
+  children,
+  delay,
+  x,
+  y,
+  rotate,
+}: {
+  children: React.ReactNode;
+  delay: number;
+  x: string;
+  y: string;
+  rotate: number;
+}) => (
+  <motion.div
+    className="absolute glass-card rounded-xl p-3 shadow-lg hidden lg:block z-20"
+    style={{ left: x, top: y }}
+    initial={{ opacity: 0, scale: 0.6, rotateZ: rotate }}
+    animate={{
+      opacity: [0, 1, 1, 1],
+      y: [20, 0, -8, 0],
+      rotateZ: [rotate, rotate + 2, rotate - 1, rotate],
+      scale: [0.6, 1, 1.02, 1],
+    }}
+    transition={{
+      duration: 6,
+      repeat: Infinity,
+      ease: "easeInOut",
+      delay: delay + 1,
+      times: [0, 0.15, 0.5, 1],
+    }}
+  >
+    {children}
+  </motion.div>
+);
+
+/* Stats bar */
+const stats = [
+  { label: "Teams Active", value: 2400, suffix: "+", icon: Users },
+  { label: "Tasks Shipped", value: 1200000, suffix: "", display: "1.2M", icon: CheckCircle2 },
+  { label: "Efficiency Gain", value: 40, suffix: "%", icon: TrendingUp },
+];
+
+const StatCounter = ({ stat, delay }: { stat: typeof stats[0]; delay: number }) => {
+  const count = useCounter(stat.display ? 0 : stat.value, 2, delay);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: delay + 0.8, duration: 0.5 }}
+      className="flex items-center gap-2 text-center"
+    >
+      <stat.icon className="w-4 h-4 text-primary" />
+      <span className="text-lg md:text-xl font-bold text-foreground">
+        {stat.display || count}{stat.suffix}
+      </span>
+      <span className="text-xs text-muted-foreground">{stat.label}</span>
+    </motion.div>
+  );
+};
 
 export const HeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -73,6 +157,21 @@ export const HeroSection = () => {
         transition={{ duration: 8, repeat: Infinity }}
         className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full bg-accent/10 blur-[100px]"
       />
+      {/* Orbiting ring */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] pointer-events-none hidden md:block">
+        <motion.div
+          className="w-3 h-3 rounded-full bg-primary/30 absolute"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          style={{ transformOrigin: "400px 400px" }}
+        />
+        <motion.div
+          className="w-2 h-2 rounded-full bg-accent/40 absolute"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          style={{ transformOrigin: "400px 400px", top: 10, left: 10 }}
+        />
+      </div>
 
       {/* Floating particles */}
       <FloatingParticle delay={0} x="10%" y="20%" size={6} />
@@ -81,6 +180,50 @@ export const HeroSection = () => {
       <FloatingParticle delay={2} x="70%" y="60%" size={3} />
       <FloatingParticle delay={1} x="50%" y="15%" size={7} />
       <FloatingParticle delay={0.5} x="90%" y="50%" size={4} />
+
+      {/* 3D Floating mini dashboard cards */}
+      <FloatingCard delay={0.5} x="5%" y="35%" rotate={-5}>
+        <div className="flex items-center gap-2 text-xs">
+          <motion.div
+            animate={{ scale: [1, 1.3, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="w-2 h-2 rounded-full bg-accent"
+          />
+          <span className="text-foreground font-medium">Sprint completed</span>
+        </div>
+        <div className="mt-1.5 flex gap-1">
+          {[70, 90, 60, 85].map((h, i) => (
+            <motion.div
+              key={i}
+              className="w-3 rounded-sm bg-primary/30"
+              initial={{ height: 0 }}
+              animate={{ height: h / 6 }}
+              transition={{ delay: 1.5 + i * 0.1, duration: 0.4 }}
+            />
+          ))}
+        </div>
+      </FloatingCard>
+
+      <FloatingCard delay={1.2} x="82%" y="40%" rotate={4}>
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center">
+            <TrendingUp className="w-3 h-3 text-primary" />
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-foreground">+27%</div>
+            <div className="text-[10px] text-muted-foreground">this week</div>
+          </div>
+        </div>
+      </FloatingCard>
+
+      <FloatingCard delay={2} x="8%" y="65%" rotate={3}>
+        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+          <div className="w-4 h-4 rounded-full bg-accent/20 flex items-center justify-center">
+            <CheckCircle2 className="w-2.5 h-2.5 text-accent" />
+          </div>
+          <span className="text-foreground font-medium">12 tasks done today</span>
+        </div>
+      </FloatingCard>
 
       <div className="container mx-auto px-6 text-center relative z-10">
         <motion.div
@@ -148,8 +291,20 @@ export const HeroSection = () => {
           </motion.div>
         </motion.div>
 
+        {/* Animated stats */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.6 }}
+          className="flex flex-wrap justify-center gap-6 md:gap-10 mt-10"
+        >
+          {stats.map((stat, i) => (
+            <StatCounter key={stat.label} stat={stat} delay={i * 0.15} />
+          ))}
+        </motion.div>
+
         {/* Dashboard video with 3D scroll perspective */}
-        <div className="mt-20 mx-auto max-w-5xl" style={{ perspective: 1200 }}>
+        <div className="mt-16 mx-auto max-w-5xl" style={{ perspective: 1200 }}>
           <motion.div
             style={{
               scale: imageScale,
@@ -157,7 +312,7 @@ export const HeroSection = () => {
               rotateX: imageRotateX,
               opacity: imageOpacity,
             }}
-            className="relative overflow-hidden floating-shadow border border-border/50 rounded-2xl"
+            className="relative overflow-hidden floating-shadow border border-border/50 rounded-2xl gradient-border"
           >
             <video
               src={dashboardVideo}

@@ -95,6 +95,27 @@ export default {
           "0%, 100%": { boxShadow: "0 0 20px -5px hsl(var(--primary) / 0.3)" },
           "50%": { boxShadow: "0 0 40px -5px hsl(var(--primary) / 0.5)" },
         },
+        "float-rotate": {
+          "0%, 100%": { transform: "translateY(0) rotate(0deg)" },
+          "25%": { transform: "translateY(-8px) rotate(2deg)" },
+          "75%": { transform: "translateY(4px) rotate(-1deg)" },
+        },
+        "shimmer": {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        "orbit": {
+          "0%": { transform: "rotate(0deg) translateX(30px) rotate(0deg)" },
+          "100%": { transform: "rotate(360deg) translateX(30px) rotate(-360deg)" },
+        },
+        "gradient-shift": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+        "count-up": {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -104,6 +125,10 @@ export default {
         "scale-up": "scale-up 0.5s ease-out forwards",
         "float": "float 6s ease-in-out infinite",
         "pulse-glow": "pulse-glow 3s ease-in-out infinite",
+        "float-rotate": "float-rotate 8s ease-in-out infinite",
+        "shimmer": "shimmer 3s linear infinite",
+        "orbit": "orbit 12s linear infinite",
+        "gradient-shift": "gradient-shift 6s ease infinite",
       },
     },
   },

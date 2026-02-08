@@ -49,23 +49,28 @@ const TestimonialsSection = () => {
           </motion.h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto" style={{ perspective: 1200 }}>
           {testimonials.map((t, i) => (
             <motion.div
               key={t.name}
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
-              animate={isVisible ? { opacity: 1, y: 0, scale: 1 } : {}}
+              initial={{ opacity: 0, y: 40, scale: 0.95, rotateX: 8 }}
+              animate={isVisible ? { opacity: 1, y: 0, scale: 1, rotateX: 0 } : {}}
               transition={{ delay: 0.2 + i * 0.14, duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
             >
-              <TiltCard className="glass-card rounded-xl p-7 h-full group">
-                <Quote className="w-8 h-8 text-primary/15 mb-3 group-hover:text-primary/30 transition-colors duration-300" />
+              <TiltCard className="glass-card rounded-xl p-7 h-full group gradient-border">
+                <motion.div
+                  animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
+                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: i * 0.8 }}
+                >
+                  <Quote className="w-8 h-8 text-primary/15 mb-3 group-hover:text-primary/30 transition-colors duration-300" />
+                </motion.div>
                 <div className="flex gap-0.5 mb-4">
                   {Array.from({ length: t.rating }).map((_, j) => (
                     <motion.div
                       key={j}
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={isVisible ? { opacity: 1, scale: 1 } : {}}
-                      transition={{ delay: 0.5 + j * 0.06 + i * 0.1 }}
+                      initial={{ opacity: 0, scale: 0, rotate: -30 }}
+                      animate={isVisible ? { opacity: 1, scale: 1, rotate: 0 } : {}}
+                      transition={{ delay: 0.5 + j * 0.06 + i * 0.1, type: "spring", stiffness: 300 }}
                     >
                       <Star className="w-4 h-4 fill-primary text-primary" />
                     </motion.div>
@@ -74,7 +79,8 @@ const TestimonialsSection = () => {
                 <p className="text-foreground text-sm leading-relaxed mb-6">"{t.quote}"</p>
                 <div className="flex items-center gap-3">
                   <motion.div
-                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    whileHover={{ scale: 1.15, rotate: 10, y: -2 }}
+                    transition={{ type: "spring", stiffness: 400 }}
                     className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary"
                   >
                     {t.name[0]}
