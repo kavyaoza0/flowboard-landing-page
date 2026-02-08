@@ -1,8 +1,8 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Play, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import dashboardImg from "@/assets/dashboard-hero.png";
-import { useRef } from "react";
+import dashboardVideo from "@/assets/dashboard-walkthrough.mp4";
+import { useRef, useState } from "react";
 
 const Navbar = () => (
   <motion.nav
@@ -148,7 +148,7 @@ export const HeroSection = () => {
           </motion.div>
         </motion.div>
 
-        {/* Dashboard image with 3D scroll perspective */}
+        {/* Dashboard video with 3D scroll perspective */}
         <div className="mt-20 mx-auto max-w-5xl" style={{ perspective: 1200 }}>
           <motion.div
             style={{
@@ -157,20 +157,26 @@ export const HeroSection = () => {
               rotateX: imageRotateX,
               opacity: imageOpacity,
             }}
-            className="overflow-hidden floating-shadow border border-border/50 rounded-2xl"
+            className="relative overflow-hidden floating-shadow border border-border/50 rounded-2xl"
           >
-            <img
-              src={dashboardImg}
-              alt="FlowBoard Dashboard"
+            <video
+              src={dashboardVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
               className="w-full h-auto"
             />
             {/* Animated scan line effect */}
             <motion.div
-              className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent"
+              className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent pointer-events-none"
               animate={{ y: ["-100%", "200%"] }}
               transition={{ duration: 4, repeat: Infinity, ease: "linear", repeatDelay: 2 }}
               style={{ height: "30%" }}
             />
+            {/* Corner glow accents */}
+            <div className="absolute top-0 left-0 w-24 h-24 bg-primary/10 blur-2xl rounded-full pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-32 h-32 bg-accent/10 blur-3xl rounded-full pointer-events-none" />
           </motion.div>
         </div>
       </div>
