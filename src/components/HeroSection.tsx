@@ -1,7 +1,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Play, Sparkles, TrendingUp, Users, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import dashboardVideo from "@/assets/dashboard-walkthrough.mp4";
+import dashboardImg from "@/assets/dashboard-hero.png";
 import { useRef, useState, useEffect } from "react";
 
 const Navbar = () => (
@@ -88,7 +88,7 @@ const FloatingCard = ({
   rotate: number;
 }) => (
   <motion.div
-    className="absolute glass-card rounded-xl p-3 shadow-lg hidden lg:block z-20"
+    className="absolute glass-card rounded-xl p-3 shadow-lg hidden md:block z-20"
     style={{ left: x, top: y }}
     initial={{ opacity: 0, scale: 0.6, rotateZ: rotate }}
     animate={{
@@ -304,7 +304,8 @@ export const HeroSection = () => {
         </motion.div>
 
         {/* Dashboard video with 3D scroll perspective */}
-        <div className="mt-16 mx-auto max-w-5xl" style={{ perspective: 1200 }}>
+        {/* Dashboard image with 3D scroll perspective */}
+        <div className="mt-12 sm:mt-16 mx-auto max-w-5xl px-2 sm:px-0" style={{ perspective: 1200 }}>
           <motion.div
             style={{
               scale: imageScale,
@@ -312,14 +313,11 @@ export const HeroSection = () => {
               rotateX: imageRotateX,
               opacity: imageOpacity,
             }}
-            className="relative overflow-hidden floating-shadow border border-border/50 rounded-2xl gradient-border"
+            className="relative overflow-hidden floating-shadow border border-border/50 rounded-2xl gradient-border group"
           >
-            <video
-              src={dashboardVideo}
-              autoPlay
-              loop
-              muted
-              playsInline
+            <img
+              src={dashboardImg}
+              alt="FlowBoard dashboard preview"
               className="w-full h-auto"
             />
             {/* Animated scan line effect */}
@@ -329,9 +327,19 @@ export const HeroSection = () => {
               transition={{ duration: 4, repeat: Infinity, ease: "linear", repeatDelay: 2 }}
               style={{ height: "30%" }}
             />
+            {/* Shimmer overlay on hover */}
+            <motion.div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+              style={{
+                background: "linear-gradient(105deg, transparent 40%, hsl(var(--primary) / 0.06) 45%, hsl(var(--primary) / 0.12) 50%, hsl(var(--primary) / 0.06) 55%, transparent 60%)",
+                backgroundSize: "200% 100%",
+              }}
+              animate={{ backgroundPosition: ["-100% 0", "200% 0"] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            />
             {/* Corner glow accents */}
-            <div className="absolute top-0 left-0 w-24 h-24 bg-primary/10 blur-2xl rounded-full pointer-events-none" />
-            <div className="absolute bottom-0 right-0 w-32 h-32 bg-accent/10 blur-3xl rounded-full pointer-events-none" />
+            <div className="absolute top-0 left-0 w-16 sm:w-24 h-16 sm:h-24 bg-primary/10 blur-2xl rounded-full pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-20 sm:w-32 h-20 sm:h-32 bg-accent/10 blur-3xl rounded-full pointer-events-none" />
           </motion.div>
         </div>
       </div>
