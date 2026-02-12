@@ -31,8 +31,8 @@ const HowItWorksSection = () => {
   const { ref, isVisible } = useScrollReveal(0.05);
 
   return (
-    <section id="how-it-works" className="py-16 sm:py-20 md:py-28 relative" ref={ref}>
-      <div className="absolute inset-0 bg-primary/[0.02]" />
+    <section id="how-it-works" className="py-16 sm:py-20 md:py-28 relative section-glow" ref={ref}>
+      <div className="absolute inset-0 bg-primary/[0.02] dot-grid" />
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="text-center mb-10 sm:mb-16">
           <motion.span

@@ -28,7 +28,7 @@ const TestimonialsSection = () => {
   const { ref, isVisible } = useScrollReveal(0.05);
 
   return (
-    <section id="testimonials" className="py-16 sm:py-20 md:py-28" ref={ref}>
+    <section id="testimonials" className="py-16 sm:py-20 md:py-28 section-glow" ref={ref}>
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-10 sm:mb-16">
           <motion.span

@@ -61,8 +61,8 @@ const FeaturesSection = () => {
   const { ref, isVisible } = useScrollReveal(0.05);
 
   return (
-    <section id="features" className="py-16 sm:py-20 md:py-28 relative" ref={ref}>
-      <div className="absolute inset-0 bg-primary/[0.02]" />
+    <section id="features" className="py-16 sm:py-20 md:py-28 relative section-glow" ref={ref}>
+      <div className="absolute inset-0 bg-primary/[0.02] dot-grid" />
       <motion.div
         animate={{ scale: [1, 1.3, 1], x: [0, 30, 0] }}
         transition={{ duration: 10, repeat: Infinity }}

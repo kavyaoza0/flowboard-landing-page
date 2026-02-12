@@ -7,8 +7,9 @@ const FinalCTASection = () => {
   const { ref, isVisible } = useScrollReveal(0.1);
 
   return (
-    <section className="py-16 sm:py-20 md:py-28 relative overflow-hidden" ref={ref}>
+    <section className="py-16 sm:py-20 md:py-28 relative overflow-hidden section-glow" ref={ref}>
       <div className="absolute inset-0 hero-gradient opacity-[0.06]" />
+      <div className="absolute inset-0 dot-grid opacity-50" />
       <motion.div
         animate={{ scale: [1, 1.3, 1], opacity: [0.03, 0.08, 0.03] }}
         transition={{ duration: 6, repeat: Infinity }}

@@ -4,34 +4,60 @@ import { Button } from "@/components/ui/button";
 import dashboardImg from "@/assets/dashboard-hero.png";
 import { useRef, useState, useEffect } from "react";
 
-const Navbar = () => (
-  <motion.nav
-    initial={{ y: -20, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    transition={{ duration: 0.5 }}
-    className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border/50"
-  >
-    <div className="container mx-auto flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6">
-      <div className="flex items-center gap-2">
-        <motion.div
-          animate={{ rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg hero-gradient"
-        />
-        <span className="text-base sm:text-lg font-bold tracking-tight text-foreground">FlowBoard</span>
+const Navbar = () => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <motion.nav
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "backdrop-blur-xl bg-background/80 border-b border-border/50 shadow-sm"
+          : "bg-transparent border-b border-transparent"
+      }`}
+    >
+      <div className="container mx-auto flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6">
+        <div className="flex items-center gap-2">
+          <motion.div
+            animate={{ rotate: [0, 5, -5, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg hero-gradient"
+          />
+          <span className="text-base sm:text-lg font-bold tracking-tight text-foreground">FlowBoard</span>
+        </div>
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
+          {["Features", "How It Works", "Testimonials"].map((item, i) => (
+            <motion.a
+              key={item}
+              href={`#${item.toLowerCase().replace(/ /g, "-")}`}
+              className="hover:text-foreground transition-colors relative group"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + i * 0.1 }}
+            >
+              {item}
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary rounded-full group-hover:w-full transition-all duration-300" />
+            </motion.a>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Button variant="ghost" size="sm" className="text-muted-foreground text-xs sm:text-sm">Log In</Button>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button size="sm" className="text-xs sm:text-sm">Get Started</Button>
+          </motion.div>
+        </div>
       </div>
-      <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-        <a href="#features" className="hover:text-foreground transition-colors">Features</a>
-        <a href="#how-it-works" className="hover:text-foreground transition-colors">How It Works</a>
-        <a href="#testimonials" className="hover:text-foreground transition-colors">Testimonials</a>
-      </div>
-      <div className="flex items-center gap-2 sm:gap-3">
-        <Button variant="ghost" size="sm" className="text-muted-foreground text-xs sm:text-sm">Log In</Button>
-        <Button size="sm" className="text-xs sm:text-sm">Get Started</Button>
-      </div>
-    </div>
-  </motion.nav>
-);
+    </motion.nav>
+  );
+};
 
 export default Navbar;
 
