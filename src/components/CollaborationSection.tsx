@@ -44,7 +44,7 @@ const CollaborationSection = () => {
   const { ref, isVisible } = useScrollReveal(0.05);
 
   return (
-    <section className="py-16 sm:py-20 md:py-28" ref={ref}>
+    <section className="py-16 sm:py-20 md:py-28 section-glow" ref={ref}>
       <div className="container mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-16 items-center">
           <div>
