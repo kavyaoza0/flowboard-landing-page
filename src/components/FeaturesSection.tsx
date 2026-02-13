@@ -2,6 +2,10 @@ import { motion } from "framer-motion";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { Zap, Users, BarChart3, Shield, Workflow, Clock } from "lucide-react";
 import TiltCard from "@/components/TiltCard";
+import TextReveal from "@/components/animations/TextReveal";
+import BlurFade from "@/components/animations/BlurFade";
+import Spotlight from "@/components/animations/Spotlight";
+import ParallaxSection from "@/components/animations/ParallaxSection";
 
 const features = [
   {
@@ -43,16 +47,17 @@ const features = [
 ];
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.95, rotateX: 8 },
+  hidden: { opacity: 0, y: 40, scale: 0.92, rotateX: 10, filter: "blur(8px)" },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
     scale: 1,
     rotateX: 0,
+    filter: "blur(0px)",
     transition: {
       delay: 0.06 * i + 0.15,
-      duration: 0.5,
-      ease: [0.21, 0.47, 0.32, 0.98],
+      duration: 0.65,
+      ease: [0.16, 1, 0.3, 1],
     },
   }),
 };
@@ -75,66 +80,60 @@ const FeaturesSection = () => {
       />
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        <div className="text-center mb-10 sm:mb-16">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={isVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
-            className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-widest"
-          >
-            Features
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={isVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.1, duration: 0.6 }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mt-3 text-foreground"
-          >
-            Everything you need to ship
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={isVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-muted-foreground text-sm sm:text-base md:text-lg mt-3 sm:mt-4 max-w-xl mx-auto px-2"
-          >
-            Powerful tools designed for modern teams that move fast.
-          </motion.p>
-        </div>
+        <ParallaxSection speed={0.15}>
+          <div className="text-center mb-10 sm:mb-16">
+            <BlurFade delay={0}>
+              <span className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-widest">
+                Features
+              </span>
+            </BlurFade>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mt-3 text-foreground">
+              <TextReveal delay={0.1}>Everything you need to ship</TextReveal>
+            </h2>
+            <BlurFade delay={0.3}>
+              <p className="text-muted-foreground text-sm sm:text-base md:text-lg mt-3 sm:mt-4 max-w-xl mx-auto px-2">
+                Powerful tools designed for modern teams that move fast.
+              </p>
+            </BlurFade>
+          </div>
+        </ParallaxSection>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6" style={{ perspective: 1200 }}>
-          {features.map((feature, i) => (
-            <motion.div
-              key={feature.title}
-              custom={i}
-              initial="hidden"
-              animate={isVisible ? "visible" : "hidden"}
-              variants={cardVariants}
-            >
-              <TiltCard className="glass-card rounded-xl p-5 sm:p-6 md:p-7 h-full group cursor-default gradient-border">
-                <motion.div
-                  className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 sm:mb-5 group-hover:bg-primary/20 transition-colors duration-300"
-                  whileHover={{ scale: 1.15, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
+        <Spotlight className="rounded-2xl p-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6" style={{ perspective: 1200 }}>
+            {features.map((feature, i) => (
+              <motion.div
+                key={feature.title}
+                custom={i}
+                initial="hidden"
+                animate={isVisible ? "visible" : "hidden"}
+                variants={cardVariants}
+              >
+                <TiltCard className="glass-card rounded-xl p-5 sm:p-6 md:p-7 h-full group cursor-default gradient-border">
                   <motion.div
-                    animate={feature.iconAnim}
-                    transition={{ duration: feature.title === "Time Tracking" ? 8 : 3, repeat: Infinity, ease: "easeInOut" }}
+                    className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 sm:mb-5 group-hover:bg-primary/20 transition-colors duration-300"
+                    whileHover={{ scale: 1.15, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 400 }}
                   >
-                    <feature.icon className="w-5 sm:w-6 h-5 sm:h-6 text-primary" />
+                    <motion.div
+                      animate={feature.iconAnim}
+                      transition={{ duration: feature.title === "Time Tracking" ? 8 : 3, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <feature.icon className="w-5 sm:w-6 h-5 sm:h-6 text-primary" />
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-1.5 sm:mb-2 group-hover:text-primary transition-colors duration-300">
-                  {feature.title}
-                </h3>
-                <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">{feature.description}</p>
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground mb-1.5 sm:mb-2 group-hover:text-primary transition-colors duration-300">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">{feature.description}</p>
 
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary/0 group-hover:bg-primary/40 transition-all duration-500 scale-x-0 group-hover:scale-x-100 origin-left" />
-                <motion.div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-primary/0 group-hover:bg-primary/10 blur-xl transition-all duration-500 pointer-events-none" />
-              </TiltCard>
-            </motion.div>
-          ))}
-        </div>
+                  {/* Animated bottom line */}
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary/0 group-hover:bg-primary/40 transition-all duration-500 scale-x-0 group-hover:scale-x-100 origin-left" />
+                  <motion.div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-primary/0 group-hover:bg-primary/10 blur-xl transition-all duration-500 pointer-events-none" />
+                </TiltCard>
+              </motion.div>
+            ))}
+          </div>
+        </Spotlight>
       </div>
     </section>
   );

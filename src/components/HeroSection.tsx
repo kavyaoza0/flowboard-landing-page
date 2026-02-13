@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import dashboardImg from "@/assets/dashboard-hero.png";
 import { useRef, useState, useEffect } from "react";
 import { useTheme } from "next-themes";
+import TextReveal from "@/components/animations/TextReveal";
+import BlurFade from "@/components/animations/BlurFade";
+import MagneticButton from "@/components/animations/MagneticButton";
+import CountUp from "@/components/animations/CountUp";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -32,27 +36,30 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto flex items-center justify-between h-14 sm:h-16 px-4 sm:px-6">
-        <div className="flex items-center gap-2">
-          <motion.div
-            animate={{ rotate: [0, 5, -5, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg hero-gradient"
-          />
-          <span className="text-base sm:text-lg font-bold tracking-tight text-foreground">FlowBoard</span>
-        </div>
+        <MagneticButton strength={0.2}>
+          <div className="flex items-center gap-2">
+            <motion.div
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg hero-gradient"
+            />
+            <span className="text-base sm:text-lg font-bold tracking-tight text-foreground">FlowBoard</span>
+          </div>
+        </MagneticButton>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
           {["Features", "How It Works", "Testimonials"].map((item, i) => (
-            <motion.a
-              key={item}
-              href={`#${item.toLowerCase().replace(/ /g, "-")}`}
-              className="hover:text-foreground transition-colors relative group"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + i * 0.1 }}
-            >
-              {item}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary rounded-full group-hover:w-full transition-all duration-300" />
-            </motion.a>
+            <MagneticButton key={item} strength={0.15}>
+              <motion.a
+                href={`#${item.toLowerCase().replace(/ /g, "-")}`}
+                className="hover:text-foreground transition-colors relative group"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + i * 0.1 }}
+              >
+                {item}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary rounded-full group-hover:w-full transition-all duration-300" />
+              </motion.a>
+            </MagneticButton>
           ))}
         </div>
         <div className="flex items-center gap-2 sm:gap-3">
@@ -64,18 +71,28 @@ const Navbar = () => {
               className="p-2 sm:p-2.5 rounded-lg text-muted-foreground hover:text-foreground bg-transparent hover:bg-primary/10 transition-all duration-300"
               aria-label="Toggle dark mode"
             >
-              {theme === "dark" ? (
-                <Sun className="w-4 h-4 sm:w-5 sm:h-5" />
-              ) : (
-                <Moon className="w-4 h-4 sm:w-5 sm:h-5" />
-              )}
+              <motion.div
+                key={theme}
+                initial={{ rotate: -90, scale: 0 }}
+                animate={{ rotate: 0, scale: 1 }}
+                exit={{ rotate: 90, scale: 0 }}
+                transition={{ duration: 0.3, type: "spring" }}
+              >
+                {theme === "dark" ? (
+                  <Sun className="w-4 h-4 sm:w-5 sm:h-5" />
+                ) : (
+                  <Moon className="w-4 h-4 sm:w-5 sm:h-5" />
+                )}
+              </motion.div>
             </motion.button>
           )}
-           <Button variant="ghost" size="sm" className="text-muted-foreground text-xs sm:text-sm">Log In</Button>
-           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-             <Button size="sm" className="text-xs sm:text-sm">Get Started</Button>
-           </motion.div>
-         </div>
+          <Button variant="ghost" size="sm" className="text-muted-foreground text-xs sm:text-sm">Log In</Button>
+          <MagneticButton>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button size="sm" className="text-xs sm:text-sm">Get Started</Button>
+            </motion.div>
+          </MagneticButton>
+        </div>
       </div>
     </motion.nav>
   );
@@ -83,30 +100,7 @@ const Navbar = () => {
 
 export default Navbar;
 
-/* Animated counter hook */
-const useCounter = (end: number, duration: number = 2, delay: number = 0) => {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      let start = 0;
-      const step = end / (duration * 60);
-      const interval = setInterval(() => {
-        start += step;
-        if (start >= end) {
-          setCount(end);
-          clearInterval(interval);
-        } else {
-          setCount(Math.floor(start));
-        }
-      }, 1000 / 60);
-      return () => clearInterval(interval);
-    }, delay * 1000);
-    return () => clearTimeout(timeout);
-  }, [end, duration, delay]);
-  return count;
-};
-
-/* Floating particles - visible on all devices */
+/* Floating particles */
 const FloatingParticle = ({ delay, x, y, size }: { delay: number; x: string; y: string; size: number }) => (
   <motion.div
     className="absolute rounded-full bg-primary/20"
@@ -121,7 +115,7 @@ const FloatingParticle = ({ delay, x, y, size }: { delay: number; x: string; y: 
   />
 );
 
-/* 3D floating mini-card - now visible on sm+ */
+/* 3D floating mini-card */
 const FloatingCard = ({
   children,
   delay,
@@ -161,30 +155,12 @@ const FloatingCard = ({
   </motion.div>
 );
 
-/* Stats bar */
+/* Stats data */
 const stats = [
   { label: "Teams Active", value: 2400, suffix: "+", icon: Users },
-  { label: "Tasks Shipped", value: 1200000, suffix: "", display: "1.2M", icon: CheckCircle2 },
+  { label: "Tasks Shipped", value: 1.2, suffix: "M", icon: CheckCircle2, decimals: 1 },
   { label: "Efficiency Gain", value: 40, suffix: "%", icon: TrendingUp },
 ];
-
-const StatCounter = ({ stat, delay }: { stat: typeof stats[0]; delay: number }) => {
-  const count = useCounter(stat.display ? 0 : stat.value, 2, delay);
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: delay + 0.8, duration: 0.5 }}
-      className="flex items-center gap-1.5 sm:gap-2 text-center"
-    >
-      <stat.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-      <span className="text-base sm:text-lg md:text-xl font-bold text-foreground">
-        {stat.display || count}{stat.suffix}
-      </span>
-      <span className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</span>
-    </motion.div>
-  );
-};
 
 export const HeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -201,7 +177,7 @@ export const HeroSection = () => {
 
   return (
     <section ref={containerRef} className="relative min-h-screen sm:min-h-[120vh] lg:min-h-[130vh] pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 overflow-hidden">
-      {/* Animated background layers */}
+      {/* Animated background */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 hero-gradient opacity-[0.04]" />
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] sm:w-[450px] md:w-[600px] h-[300px] sm:h-[450px] md:h-[600px] rounded-full bg-primary/5 blur-[80px] sm:blur-[100px] md:blur-[120px]" />
       <motion.div
@@ -210,19 +186,13 @@ export const HeroSection = () => {
         className="absolute top-1/3 right-1/4 w-[200px] sm:w-[300px] md:w-[400px] h-[200px] sm:h-[300px] md:h-[400px] rounded-full bg-accent/10 blur-[60px] sm:blur-[80px] md:blur-[100px]"
       />
 
-      {/* Orbiting ring - tablet+ */}
+      {/* Orbiting ring */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] md:w-[800px] h-[500px] md:h-[800px] pointer-events-none hidden sm:block">
         <motion.div
           className="w-2 md:w-3 h-2 md:h-3 rounded-full bg-primary/20 md:bg-primary/30 absolute"
           animate={{ rotate: 360 }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
           style={{ transformOrigin: "250px 250px" }}
-        />
-        <motion.div
-          className="w-1.5 md:w-2 h-1.5 md:h-2 rounded-full bg-accent/30 md:bg-accent/40 absolute"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          style={{ transformOrigin: "250px 250px", top: 10, left: 10 }}
         />
       </div>
 
@@ -234,7 +204,7 @@ export const HeroSection = () => {
       <FloatingParticle delay={1} x="50%" y="12%" size={6} />
       <FloatingParticle delay={0.5} x="92%" y="48%" size={3} />
 
-      {/* 3D Floating mini dashboard cards - visible on all sizes */}
+      {/* Floating cards */}
       <div className="hidden sm:block">
         <FloatingCard delay={0.5} x="3%" y="35%" mobileX="2%" mobileY="32%" rotate={-5}>
           <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs">
@@ -281,85 +251,78 @@ export const HeroSection = () => {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.2, type: "spring" }}
-          className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-medium mb-6 sm:mb-8 border border-primary/20"
-        >
-          <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
-          Now in public beta
-        </motion.div>
+        {/* Badge with blur-in */}
+        <BlurFade delay={0.1} blur={10}>
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-medium mb-6 sm:mb-8 border border-primary/20">
+            <motion.div
+              animate={{ rotate: [0, 180, 360], scale: [1, 1.2, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+            </motion.div>
+            Now in public beta
+          </div>
+        </BlurFade>
 
-        {/* Headline with staggered word animation */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold tracking-tight leading-[0.95] mb-4 sm:mb-6"
-        >
-          <motion.span
-            className="text-foreground inline-block"
-            initial={{ opacity: 0, x: -20, rotateY: -10 }}
-            animate={{ opacity: 1, x: 0, rotateY: 0 }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-          >
+        {/* Text reveal headline */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold tracking-tight leading-[0.95] mb-4 sm:mb-6">
+          <TextReveal className="text-foreground block" delay={0.2} splitBy="char">
             Work Flows
-          </motion.span>
-          <br />
-          <motion.span
-            className="text-gradient inline-block"
-            initial={{ opacity: 0, x: 20, rotateY: 10 }}
-            animate={{ opacity: 1, x: 0, rotateY: 0 }}
-            transition={{ duration: 0.7, delay: 0.55 }}
-          >
+          </TextReveal>
+          <TextReveal className="text-gradient block" delay={0.5} splitBy="char">
             Better Together.
-          </motion.span>
-        </motion.h1>
+          </TextReveal>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl sm:max-w-2xl mx-auto mb-8 sm:mb-10 px-2"
-        >
-          The all-in-one platform for teams who want to move faster. Automate tasks,
-          collaborate in real-time, and ship with confidence.
-        </motion.p>
+        <BlurFade delay={0.8} distance={30}>
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl sm:max-w-2xl mx-auto mb-8 sm:mb-10 px-2">
+            The all-in-one platform for teams who want to move faster. Automate tasks,
+            collaborate in real-time, and ship with confidence.
+          </p>
+        </BlurFade>
 
-        {/* CTA buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.75 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
-        >
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
-            <Button size="lg" className="text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 glow-primary animate-pulse-glow w-full sm:w-auto">
-              Try It Free
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </motion.div>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
-            <Button variant="outline" size="lg" className="text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 w-full sm:w-auto">
-              <Play className="mr-2 w-4 h-4" />
-              Watch Demo
-            </Button>
-          </motion.div>
-        </motion.div>
+        {/* CTA with magnetic hover */}
+        <BlurFade delay={1} distance={20}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            <MagneticButton strength={0.25}>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+                <Button size="lg" className="text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 glow-primary animate-pulse-glow w-full sm:w-auto">
+                  Try It Free
+                  <motion.span
+                    className="ml-2 inline-block"
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </motion.span>
+                </Button>
+              </motion.div>
+            </MagneticButton>
+            <MagneticButton strength={0.25}>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+                <Button variant="outline" size="lg" className="text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 w-full sm:w-auto">
+                  <Play className="mr-2 w-4 h-4" />
+                  Watch Demo
+                </Button>
+              </motion.div>
+            </MagneticButton>
+          </div>
+        </BlurFade>
 
-        {/* Animated stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
-          className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-10 mt-8 sm:mt-10"
-        >
-          {stats.map((stat, i) => (
-            <StatCounter key={stat.label} stat={stat} delay={i * 0.15} />
-          ))}
-        </motion.div>
+        {/* Stats with spring CountUp */}
+        <BlurFade delay={1.3} distance={15}>
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-10 mt-8 sm:mt-10">
+            {stats.map((stat) => (
+              <div key={stat.label} className="flex items-center gap-1.5 sm:gap-2 text-center">
+                <stat.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+                <span className="text-base sm:text-lg md:text-xl font-bold text-foreground">
+                  <CountUp target={stat.value} suffix={stat.suffix} decimals={stat.decimals || 0} />
+                </span>
+                <span className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</span>
+              </div>
+            ))}
+          </div>
+        </BlurFade>
 
         {/* Dashboard image with 3D scroll perspective */}
         <div className="mt-10 sm:mt-14 md:mt-16 mx-auto max-w-5xl px-1 sm:px-2 md:px-0" style={{ perspective: 1200 }}>
@@ -377,7 +340,7 @@ export const HeroSection = () => {
               alt="FlowBoard dashboard preview"
               className="w-full h-auto"
             />
-            {/* Animated scan line effect */}
+            {/* Animated scan line */}
             <motion.div
               className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent pointer-events-none"
               animate={{ y: ["-100%", "200%"] }}
@@ -394,7 +357,6 @@ export const HeroSection = () => {
               animate={{ backgroundPosition: ["-100% 0", "200% 0"] }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             />
-            {/* Corner glow accents */}
             <div className="absolute top-0 left-0 w-12 sm:w-16 md:w-24 h-12 sm:h-16 md:h-24 bg-primary/10 blur-xl sm:blur-2xl rounded-full pointer-events-none" />
             <div className="absolute bottom-0 right-0 w-16 sm:w-20 md:w-32 h-16 sm:h-20 md:h-32 bg-accent/10 blur-2xl sm:blur-3xl rounded-full pointer-events-none" />
           </motion.div>
