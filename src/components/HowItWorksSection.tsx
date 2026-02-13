@@ -2,6 +2,9 @@ import { motion } from "framer-motion";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import TiltCard from "@/components/TiltCard";
 import { UserPlus, Palette, Rocket } from "lucide-react";
+import TextReveal from "@/components/animations/TextReveal";
+import BlurFade from "@/components/animations/BlurFade";
+import ParallaxSection from "@/components/animations/ParallaxSection";
 
 const steps = [
   {
@@ -27,6 +30,21 @@ const steps = [
   },
 ];
 
+const stepVariants = {
+  hidden: { opacity: 0, y: 50, scale: 0.9, filter: "blur(10px)" },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: {
+      delay: 0.2 + i * 0.2,
+      duration: 0.7,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  }),
+};
+
 const HowItWorksSection = () => {
   const { ref, isVisible } = useScrollReveal(0.05);
 
@@ -34,32 +52,27 @@ const HowItWorksSection = () => {
     <section id="how-it-works" className="py-16 sm:py-20 md:py-28 relative section-glow" ref={ref}>
       <div className="absolute inset-0 bg-primary/[0.02] dot-grid" />
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        <div className="text-center mb-10 sm:mb-16">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={isVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
-            className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-widest"
-          >
-            How It Works
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={isVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.1, duration: 0.6 }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mt-3 text-foreground"
-          >
-            Up and running in minutes
-          </motion.h2>
-        </div>
+        <ParallaxSection speed={0.15}>
+          <div className="text-center mb-10 sm:mb-16">
+            <BlurFade delay={0}>
+              <span className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-widest">
+                How It Works
+              </span>
+            </BlurFade>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mt-3 text-foreground">
+              <TextReveal delay={0.1}>Up and running in minutes</TextReveal>
+            </h2>
+          </div>
+        </ParallaxSection>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-5 md:gap-8 max-w-4xl mx-auto" style={{ perspective: 1000 }}>
           {steps.map((step, i) => (
             <motion.div
               key={step.number}
-              initial={{ opacity: 0, y: 30, scale: 0.95, rotateY: -10 }}
-              animate={isVisible ? { opacity: 1, y: 0, scale: 1, rotateY: 0 } : {}}
-              transition={{ delay: 0.15 + i * 0.15, duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
+              custom={i}
+              initial="hidden"
+              animate={isVisible ? "visible" : "hidden"}
+              variants={stepVariants}
               className="relative"
             >
               <TiltCard className={`text-center rounded-xl p-6 sm:p-7 md:p-8 bg-gradient-to-b ${step.gradient} border border-border/30 gradient-border`}>
@@ -86,10 +99,9 @@ const HowItWorksSection = () => {
                 <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">{step.description}</p>
               </TiltCard>
 
-              {/* Connector - horizontal on sm+, vertical on mobile */}
+              {/* Connector */}
               {i < steps.length - 1 && (
                 <>
-                  {/* Horizontal connector - tablet+ */}
                   <div className="hidden sm:block absolute top-1/2 -right-3 md:-right-4 w-6 md:w-8">
                     <motion.div
                       initial={{ scaleX: 0 }}
@@ -103,7 +115,6 @@ const HowItWorksSection = () => {
                       transition={{ delay: 1.2 + i * 0.2, duration: 2, repeat: Infinity, ease: "easeInOut" }}
                     />
                   </div>
-                  {/* Vertical connector - mobile */}
                   <div className="sm:hidden flex justify-center py-2">
                     <motion.div
                       initial={{ scaleY: 0 }}
