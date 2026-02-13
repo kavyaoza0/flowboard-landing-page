@@ -1,11 +1,18 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Play, Sparkles, TrendingUp, Users, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Play, Sparkles, TrendingUp, Users, CheckCircle2, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import dashboardImg from "@/assets/dashboard-hero.png";
 import { useRef, useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -49,11 +56,26 @@ const Navbar = () => {
           ))}
         </div>
         <div className="flex items-center gap-2 sm:gap-3">
-          <Button variant="ghost" size="sm" className="text-muted-foreground text-xs sm:text-sm">Log In</Button>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button size="sm" className="text-xs sm:text-sm">Get Started</Button>
-          </motion.div>
-        </div>
+          {mounted && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-2 sm:p-2.5 rounded-lg text-muted-foreground hover:text-foreground bg-transparent hover:bg-primary/10 transition-all duration-300"
+              aria-label="Toggle dark mode"
+            >
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4 sm:w-5 sm:h-5" />
+              ) : (
+                <Moon className="w-4 h-4 sm:w-5 sm:h-5" />
+              )}
+            </motion.button>
+          )}
+           <Button variant="ghost" size="sm" className="text-muted-foreground text-xs sm:text-sm">Log In</Button>
+           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+             <Button size="sm" className="text-xs sm:text-sm">Get Started</Button>
+           </motion.div>
+         </div>
       </div>
     </motion.nav>
   );
