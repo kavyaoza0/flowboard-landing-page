@@ -71,7 +71,17 @@ const TestimonialsSection = () => {
                 animate={isVisible ? "visible" : "hidden"}
                 variants={cardVariants}
               >
-                <TiltCard className="glass-card rounded-xl p-5 sm:p-6 md:p-7 h-full group gradient-border">
+                <TiltCard className="glass-card rounded-xl p-5 sm:p-6 md:p-7 h-full group gradient-border overflow-hidden">
+                  {/* Animated background shimmer */}
+                  <motion.div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+                    style={{
+                      background: "linear-gradient(135deg, transparent 30%, hsl(var(--primary) / 0.04) 50%, transparent 70%)",
+                      backgroundSize: "200% 200%",
+                    }}
+                    animate={{ backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"] }}
+                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                  />
                   <motion.div
                     animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
                     transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: i * 0.8 }}
@@ -90,15 +100,27 @@ const TestimonialsSection = () => {
                       </motion.div>
                     ))}
                   </div>
-                  <p className="text-foreground text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">"{t.quote}"</p>
+                  <p className="relative text-foreground text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">"{t.quote}"</p>
                   <div className="flex items-center gap-2.5 sm:gap-3">
-                    <motion.div
-                      whileHover={{ scale: 1.15, rotate: 10, y: -2 }}
-                      transition={{ type: "spring", stiffness: 400 }}
-                      className="w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-primary/10 flex items-center justify-center text-xs sm:text-sm font-bold text-primary"
-                    >
-                      {t.name[0]}
-                    </motion.div>
+                    {/* Avatar with animated ring */}
+                    <div className="relative">
+                      <motion.div
+                        className="absolute -inset-1 rounded-full"
+                        style={{
+                          background: "conic-gradient(hsl(var(--primary)), hsl(var(--accent)), hsl(var(--primary)))",
+                          opacity: 0.3,
+                        }}
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                      />
+                      <motion.div
+                        whileHover={{ scale: 1.15, y: -2 }}
+                        transition={{ type: "spring", stiffness: 400 }}
+                        className="relative w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-primary/10 flex items-center justify-center text-xs sm:text-sm font-bold text-primary"
+                      >
+                        {t.name[0]}
+                      </motion.div>
+                    </div>
                     <div>
                       <div className="text-xs sm:text-sm font-semibold text-foreground">{t.name}</div>
                       <div className="text-[10px] sm:text-xs text-muted-foreground">{t.role}</div>

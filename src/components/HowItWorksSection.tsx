@@ -77,19 +77,36 @@ const HowItWorksSection = () => {
               variants={stepVariants}
               className="relative"
             >
-              <TiltCard className={`text-center rounded-xl p-6 sm:p-7 md:p-8 bg-gradient-to-b ${step.gradient} border border-border/30 gradient-border`}>
+              <TiltCard className={`text-center rounded-xl p-6 sm:p-7 md:p-8 bg-gradient-to-b ${step.gradient} border border-border/30 gradient-border overflow-hidden`}>
+                {/* Animated radial pulse */}
                 <motion.div
-                  className="w-11 sm:w-12 md:w-14 h-11 sm:h-12 md:h-14 rounded-xl sm:rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3 sm:mb-4"
-                  whileHover={{ rotate: 10, scale: 1.15 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background: "radial-gradient(circle at 50% 30%, hsl(var(--primary) / 0.06), transparent 60%)",
+                  }}
+                  animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: i * 1.2 }}
+                />
+                <div className="relative mx-auto mb-3 sm:mb-4 w-11 sm:w-12 md:w-14 h-11 sm:h-12 md:h-14">
+                  {/* Pulsing ring */}
                   <motion.div
-                    animate={{ y: [0, -3, 0] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+                    className="absolute inset-0 rounded-xl sm:rounded-2xl border-2 border-primary/20"
+                    animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0, 0.4] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeOut", delay: i * 0.4 }}
+                  />
+                  <motion.div
+                    className="relative w-full h-full rounded-xl sm:rounded-2xl bg-primary/10 flex items-center justify-center"
+                    whileHover={{ rotate: 10, scale: 1.15 }}
+                    transition={{ type: "spring", stiffness: 400 }}
                   >
-                    <step.icon className="w-5 sm:w-6 h-5 sm:h-6 text-primary" />
+                    <motion.div
+                      animate={{ y: [0, -3, 0] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+                    >
+                      <step.icon className="w-5 sm:w-6 h-5 sm:h-6 text-primary" />
+                    </motion.div>
                   </motion.div>
-                </motion.div>
+                </div>
                 <motion.div
                   className="text-4xl sm:text-5xl font-black text-primary/10 mb-2 sm:mb-3"
                   whileHover={{ scale: 1.15, color: "hsl(var(--primary) / 0.25)" }}
@@ -97,8 +114,8 @@ const HowItWorksSection = () => {
                 >
                   {step.number}
                 </motion.div>
-                <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2 sm:mb-3">{step.title}</h3>
-                <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">{step.description}</p>
+                <h3 className="relative text-lg sm:text-xl font-semibold text-foreground mb-2 sm:mb-3">{step.title}</h3>
+                <p className="relative text-muted-foreground text-xs sm:text-sm leading-relaxed">{step.description}</p>
               </TiltCard>
 
               {/* Connector */}

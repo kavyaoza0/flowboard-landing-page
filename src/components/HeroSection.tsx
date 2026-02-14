@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 import { ArrowRight, Play, Sparkles, TrendingUp, Users, CheckCircle2, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import dashboardImg from "@/assets/dashboard-hero.png";
@@ -157,12 +157,68 @@ const FloatingCard = ({
   </motion.div>
 );
 
+/* Animated grid lines behind dashboard */
+const GridLines = () => (
+  <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.06]">
+    {Array.from({ length: 6 }).map((_, i) => (
+      <motion.div
+        key={`h-${i}`}
+        className="absolute left-0 right-0 h-px bg-primary"
+        style={{ top: `${(i + 1) * 16.6}%` }}
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ delay: 1.5 + i * 0.1, duration: 0.8, ease: "easeOut" }}
+      />
+    ))}
+    {Array.from({ length: 8 }).map((_, i) => (
+      <motion.div
+        key={`v-${i}`}
+        className="absolute top-0 bottom-0 w-px bg-primary"
+        style={{ left: `${(i + 1) * 12.5}%` }}
+        initial={{ scaleY: 0 }}
+        animate={{ scaleY: 1 }}
+        transition={{ delay: 1.8 + i * 0.08, duration: 0.8, ease: "easeOut" }}
+      />
+    ))}
+  </div>
+);
+
 /* Stats data */
 const stats = [
   { label: "Teams Active", value: 2400, suffix: "+", icon: Users },
   { label: "Tasks Shipped", value: 1.2, suffix: "M", icon: CheckCircle2, decimals: 1 },
   { label: "Efficiency Gain", value: 40, suffix: "%", icon: TrendingUp },
 ];
+
+/* Cursor trail effect */
+const CursorGlow = () => {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
+  const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
+
+  useEffect(() => {
+    const handleMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+    };
+    window.addEventListener("mousemove", handleMove);
+    return () => window.removeEventListener("mousemove", handleMove);
+  }, [mouseX, mouseY]);
+
+  return (
+    <motion.div
+      className="fixed w-[300px] h-[300px] rounded-full pointer-events-none z-[1] hidden md:block"
+      style={{
+        x: springX,
+        y: springY,
+        translateX: "-50%",
+        translateY: "-50%",
+        background: "radial-gradient(circle, hsl(var(--primary) / 0.04) 0%, transparent 70%)",
+      }}
+    />
+  );
+};
 
 export const HeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -179,11 +235,15 @@ export const HeroSection = () => {
 
   return (
     <section ref={containerRef} className="relative min-h-screen sm:min-h-[120vh] lg:min-h-[130vh] pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 overflow-hidden">
+      {/* Cursor glow */}
+      <CursorGlow />
+
       {/* Animated background */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 hero-gradient opacity-[0.04]" />
       <MorphBlob className="top-[15%] left-[10%]" color="primary" size={350} duration={14} />
       <MorphBlob className="top-[40%] right-[5%]" color="accent" size={250} duration={18} />
       <FloatingOrbs count={8} />
+      <GridLines />
 
       {/* Orbiting ring */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] md:w-[800px] h-[500px] md:h-[800px] pointer-events-none hidden sm:block">
@@ -311,14 +371,24 @@ export const HeroSection = () => {
         {/* Stats with spring CountUp */}
         <BlurFade delay={1.3} distance={15}>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-10 mt-8 sm:mt-10">
-            {stats.map((stat) => (
-              <div key={stat.label} className="flex items-center gap-1.5 sm:gap-2 text-center">
-                <stat.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+            {stats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                className="flex items-center gap-1.5 sm:gap-2 text-center"
+                whileHover={{ y: -3, scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 400 }}
+              >
+                <motion.div
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+                >
+                  <stat.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+                </motion.div>
                 <span className="text-base sm:text-lg md:text-xl font-bold text-foreground">
                   <CountUp target={stat.value} suffix={stat.suffix} decimals={stat.decimals || 0} />
                 </span>
                 <span className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</span>
-              </div>
+              </motion.div>
             ))}
           </div>
         </BlurFade>
@@ -356,8 +426,19 @@ export const HeroSection = () => {
               animate={{ backgroundPosition: ["-100% 0", "200% 0"] }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             />
+            {/* Corner glows */}
             <div className="absolute top-0 left-0 w-12 sm:w-16 md:w-24 h-12 sm:h-16 md:h-24 bg-primary/10 blur-xl sm:blur-2xl rounded-full pointer-events-none" />
             <div className="absolute bottom-0 right-0 w-16 sm:w-20 md:w-32 h-16 sm:h-20 md:h-32 bg-accent/10 blur-2xl sm:blur-3xl rounded-full pointer-events-none" />
+            {/* Edge light beam */}
+            <motion.div
+              className="absolute top-0 left-0 w-full h-px pointer-events-none"
+              style={{
+                background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), transparent)",
+                backgroundSize: "200% 100%",
+              }}
+              animate={{ backgroundPosition: ["-100% 0", "200% 0"] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            />
           </motion.div>
         </div>
       </div>

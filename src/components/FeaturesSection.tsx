@@ -7,7 +7,6 @@ import BlurFade from "@/components/animations/BlurFade";
 import Spotlight from "@/components/animations/Spotlight";
 import ParallaxSection from "@/components/animations/ParallaxSection";
 import FloatingOrbs from "@/components/animations/FloatingOrbs";
-import FlipCard from "@/components/animations/FlipCard";
 
 const features = [
   {
@@ -111,37 +110,51 @@ const FeaturesSection = () => {
                 animate={isVisible ? "visible" : "hidden"}
                 variants={cardVariants}
               >
-                <FlipCard
-                  className="h-full min-h-[200px] sm:min-h-[220px]"
-                  front={
-                    <div className="glass-card rounded-xl p-5 sm:p-6 md:p-7 h-full group cursor-default gradient-border">
+                <TiltCard className="glass-card rounded-xl p-5 sm:p-6 md:p-7 h-full group cursor-default gradient-border overflow-hidden">
+                  {/* Animated background pulse on hover */}
+                  <motion.div
+                    className="absolute inset-0 bg-primary/0 group-hover:bg-primary/[0.03] transition-colors duration-500 rounded-xl"
+                  />
+                  {/* Animated ring behind icon */}
+                  <div className="relative mb-4 sm:mb-5">
+                    <motion.div
+                      className="absolute -inset-1 rounded-xl bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
+                    />
+                    <motion.div
+                      className="relative w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300"
+                      whileHover={{ scale: 1.15, rotate: 5 }}
+                      transition={{ type: "spring", stiffness: 400 }}
+                    >
                       <motion.div
-                        className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 sm:mb-5"
-                        whileHover={{ scale: 1.15, rotate: 5 }}
-                        transition={{ type: "spring", stiffness: 400 }}
+                        animate={feature.iconAnim}
+                        transition={{ duration: feature.title === "Time Tracking" ? 8 : 3, repeat: Infinity, ease: "easeInOut" }}
                       >
-                        <motion.div
-                          animate={feature.iconAnim}
-                          transition={{ duration: feature.title === "Time Tracking" ? 8 : 3, repeat: Infinity, ease: "easeInOut" }}
-                        >
-                          <feature.icon className="w-5 sm:w-6 h-5 sm:h-6 text-primary" />
-                        </motion.div>
+                        <feature.icon className="w-5 sm:w-6 h-5 sm:h-6 text-primary" />
                       </motion.div>
-                      <h3 className="text-base sm:text-lg font-semibold text-foreground mb-1.5 sm:mb-2">
-                        {feature.title}
-                      </h3>
-                      <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">{feature.description}</p>
-                      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary/0 group-hover:bg-primary/40 transition-all duration-500 scale-x-0 group-hover:scale-x-100 origin-left" />
-                    </div>
-                  }
-                  back={
-                    <div className="glass-card rounded-xl p-5 sm:p-6 md:p-7 h-full flex flex-col items-center justify-center text-center gradient-border bg-primary/5">
-                      <feature.icon className="w-8 sm:w-10 h-8 sm:h-10 text-primary mb-3" />
-                      <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
-                      <p className="text-xs text-muted-foreground">Tap to flip back</p>
-                    </div>
-                  }
-                />
+                    </motion.div>
+                  </div>
+                  <h3 className="relative text-base sm:text-lg font-semibold text-foreground mb-1.5 sm:mb-2 group-hover:text-primary transition-colors duration-300">
+                    {feature.title}
+                  </h3>
+                  <p className="relative text-muted-foreground text-xs sm:text-sm leading-relaxed">{feature.description}</p>
+
+                  {/* Animated bottom line that slides in */}
+                  <motion.div
+                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary/0 via-primary/60 to-primary/0 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"
+                  />
+                  {/* Bottom glow */}
+                  <motion.div
+                    className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-primary/0 group-hover:bg-primary/10 blur-xl transition-all duration-500 pointer-events-none"
+                  />
+                  {/* Corner accent dots */}
+                  <motion.div
+                    className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-primary/0 group-hover:bg-primary/30 transition-all duration-500"
+                    animate={{ scale: [1, 1.5, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }}
+                  />
+                </TiltCard>
               </motion.div>
             ))}
           </div>
