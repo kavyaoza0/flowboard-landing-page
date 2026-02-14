@@ -5,6 +5,7 @@ import { UserPlus, Palette, Rocket } from "lucide-react";
 import TextReveal from "@/components/animations/TextReveal";
 import BlurFade from "@/components/animations/BlurFade";
 import ParallaxSection from "@/components/animations/ParallaxSection";
+import FloatingOrbs from "@/components/animations/FloatingOrbs";
 
 const steps = [
   {
@@ -51,6 +52,7 @@ const HowItWorksSection = () => {
   return (
     <section id="how-it-works" className="py-16 sm:py-20 md:py-28 relative section-glow" ref={ref}>
       <div className="absolute inset-0 bg-primary/[0.02] dot-grid" />
+      <FloatingOrbs count={3} />
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <ParallaxSection speed={0.15}>
           <div className="text-center mb-10 sm:mb-16">

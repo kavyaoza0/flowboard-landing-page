@@ -8,6 +8,8 @@ import TextReveal from "@/components/animations/TextReveal";
 import BlurFade from "@/components/animations/BlurFade";
 import MagneticButton from "@/components/animations/MagneticButton";
 import CountUp from "@/components/animations/CountUp";
+import MorphBlob from "@/components/animations/MorphBlob";
+import FloatingOrbs from "@/components/animations/FloatingOrbs";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -179,12 +181,9 @@ export const HeroSection = () => {
     <section ref={containerRef} className="relative min-h-screen sm:min-h-[120vh] lg:min-h-[130vh] pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 overflow-hidden">
       {/* Animated background */}
       <motion.div style={{ y: bgY }} className="absolute inset-0 hero-gradient opacity-[0.04]" />
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] sm:w-[450px] md:w-[600px] h-[300px] sm:h-[450px] md:h-[600px] rounded-full bg-primary/5 blur-[80px] sm:blur-[100px] md:blur-[120px]" />
-      <motion.div
-        animate={{ scale: [1, 1.2, 1], opacity: [0.03, 0.06, 0.03] }}
-        transition={{ duration: 8, repeat: Infinity }}
-        className="absolute top-1/3 right-1/4 w-[200px] sm:w-[300px] md:w-[400px] h-[200px] sm:h-[300px] md:h-[400px] rounded-full bg-accent/10 blur-[60px] sm:blur-[80px] md:blur-[100px]"
-      />
+      <MorphBlob className="top-[15%] left-[10%]" color="primary" size={350} duration={14} />
+      <MorphBlob className="top-[40%] right-[5%]" color="accent" size={250} duration={18} />
+      <FloatingOrbs count={8} />
 
       {/* Orbiting ring */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] md:w-[800px] h-[500px] md:h-[800px] pointer-events-none hidden sm:block">

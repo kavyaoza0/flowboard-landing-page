@@ -5,6 +5,7 @@ import TiltCard from "@/components/TiltCard";
 import TextReveal from "@/components/animations/TextReveal";
 import BlurFade from "@/components/animations/BlurFade";
 import Spotlight from "@/components/animations/Spotlight";
+import MorphBlob from "@/components/animations/MorphBlob";
 
 const testimonials = [
   {
@@ -46,7 +47,8 @@ const TestimonialsSection = () => {
   const { ref, isVisible } = useScrollReveal(0.05);
 
   return (
-    <section id="testimonials" className="py-16 sm:py-20 md:py-28 section-glow" ref={ref}>
+    <section id="testimonials" className="py-16 sm:py-20 md:py-28 section-glow relative overflow-hidden" ref={ref}>
+      <MorphBlob className="top-[10%] right-[5%]" color="primary" size={220} duration={16} />
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-10 sm:mb-16">
           <BlurFade delay={0}>
