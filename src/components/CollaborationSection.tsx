@@ -5,6 +5,8 @@ import TiltCard from "@/components/TiltCard";
 import TextReveal from "@/components/animations/TextReveal";
 import BlurFade from "@/components/animations/BlurFade";
 import CountUp from "@/components/animations/CountUp";
+import RotatingCube from "@/components/animations/RotatingCube";
+import MorphBlob from "@/components/animations/MorphBlob";
 
 const benefits = [
   {
@@ -99,6 +101,19 @@ const CollaborationSection = () => {
               className="relative"
               style={{ perspective: 1000 }}
             >
+              <MorphBlob className="-top-10 -right-10 opacity-60" color="accent" size={200} duration={10} />
+
+              {/* 3D Rotating Cube widget */}
+              <div className="absolute -top-8 -left-6 z-30 hidden sm:block">
+                <RotatingCube size={48}>
+                  {[
+                    <MessageSquare key="m" className="w-4 h-4" />,
+                    <GitBranch key="g" className="w-4 h-4" />,
+                    <Video key="v" className="w-4 h-4" />,
+                    <ArrowUpRight key="a" className="w-4 h-4" />,
+                  ]}
+                </RotatingCube>
+              </div>
               <TiltCard className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 floating-shadow gradient-border">
                 <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
                   <div className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full bg-destructive/60" />

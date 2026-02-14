@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import TextReveal from "@/components/animations/TextReveal";
 import BlurFade from "@/components/animations/BlurFade";
 import MagneticButton from "@/components/animations/MagneticButton";
+import FloatingOrbs from "@/components/animations/FloatingOrbs";
+import MorphBlob from "@/components/animations/MorphBlob";
 
 const FinalCTASection = () => {
   const { ref, isVisible } = useScrollReveal(0.1);
@@ -13,6 +15,9 @@ const FinalCTASection = () => {
     <section className="py-16 sm:py-20 md:py-28 relative overflow-hidden section-glow" ref={ref}>
       <div className="absolute inset-0 hero-gradient opacity-[0.06]" />
       <div className="absolute inset-0 dot-grid opacity-50" />
+      <FloatingOrbs count={6} />
+      <MorphBlob className="top-[20%] left-[15%]" color="primary" size={280} duration={15} />
+      <MorphBlob className="bottom-[10%] right-[10%]" color="accent" size={200} duration={12} />
       <motion.div
         animate={{ scale: [1, 1.3, 1], opacity: [0.03, 0.08, 0.03] }}
         transition={{ duration: 6, repeat: Infinity }}
